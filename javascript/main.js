@@ -1,33 +1,57 @@
 import { global } from "./global.js";
+// DECLARACIONES
+let lang = "en-EN";
+let pages = ["popular", "topRated"];
+let actualPage = pages["popular"];
+const pageTitle = document.getElementById("page-title");
 
-// Cambio de idioma
+// CAMBIO DE IDIOMA
 const selector = document.getElementById("idioma");
 selector.value = "en-EN";
 selector.addEventListener("change", function(){
-    const lang = document.getElementById("idioma").value;
-    console.log(`El nuevo idioma es: ${lang}`);
-    getPopularMovies(lang);
+    lang = document.getElementById("idioma").value;
+    if(actualPage === pages[0]){
+        getPopularMovies(lang);
+    } 
+    if(actualPage === pages[1]){
+        getTopRatedMovies(lang);
+    }
 });
 
+// FUNCIONES
 const getPopularMovies = (lang) => {
+    pageTitle.innerHTML = "Cargando...";
     fetch(
       `${global.baseUrl}/movie/popular?api_key=${global.apiKey}&language=${lang}&page=1`
     ).then(res => res.json())
     .then(data => {
-        console.log("Datos listos");
+        pageTitle.innerHTML = "Películas populares";
         const movies = data.results;
         renderMovies(movies);
     })
     .catch(err => console.log(err));
 }
-
-console.log("Cargando datos...");
 getPopularMovies();
+
+const getTopRatedMovies = (lang) => {
+    pageTitle.innerHTML = "Cargando...";
+  fetch(
+    `${global.baseUrl}/movie/top_rated?api_key=${global.apiKey}&language=${lang}&page=1`
+  )
+    .then((res) => res.json())
+    .then((data) => {
+      pageTitle.innerHTML = "Películas Mejor Valoradas";
+      const topRated = data.results;
+      console.log(topRated);
+      renderMovies(topRated);
+    })
+    .catch((err) => console.log(err));
+};
 
 const renderMovies = (movies) => {
     console.log(movies);
     const root = document.getElementById("movies");
-    
+
     // Limpiar html
     root.innerHTML = "";
 
@@ -40,3 +64,16 @@ const renderMovies = (movies) => {
         </div>`;
     }
 }
+
+// MAIN
+const btnTopRatedMovies = document.getElementById("top-rated-movies");
+const btnPopularMovies = document.getElementById("popular-movies");
+btnTopRatedMovies.addEventListener("click", () => {
+    getTopRatedMovies(lang);
+    actualPage = pages[1];
+
+});
+btnPopularMovies.addEventListener("click", () => {
+    getPopularMovies(lang);
+    actualPage = pages[0];
+});

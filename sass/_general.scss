@@ -1,0 +1,25 @@
+:root {
+    --main-color: rgb(0, 93, 186);
+    --bgcolor: #c0c0c0;
+}
+
+* {
+    font-family: Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    color: white;
+}
+
+body {
+    background-color: var(--bgcolor);
+}
+.container {
+    width: 70%;
+    margin: 0 auto;
+}
+#page-title {
+    margin-top: 10px;
+    margin-bottom: 0;
+    margin-left: 10px;
+}

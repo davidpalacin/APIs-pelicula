@@ -82,4 +82,22 @@ body {
 #box-idioma select,
 #box-idioma select option {
   color: black;
+}
+
+.container-detail {
+  display: none;
+  margin: 15px auto;
+}
+
+.container-detail-image img {
+  width: 100%;
+  height: auto;
+}
+
+.container-detail-info {
+  display: flex;
+  width: 90%;
+  flex-direction: column;
+  justify-content: space-around;
+  padding: 0 15px;
 }/*# sourceMappingURL=style.css.map */

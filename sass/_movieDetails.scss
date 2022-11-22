@@ -1,0 +1,24 @@
+// <main class="container-detail">
+//         <div class="container-detail-image"></div>
+//         <div class="container-detail-info">
+//             <p id="container-detail-info-title"></p>
+//             <p id="container-detail-info-description"></p>
+//             <p id="container-detail-info-rating"></p>
+//         </div>
+// </main>
+.container-detail{
+    display: none;
+    margin: 15px auto;
+}
+
+.container-detail-image img{
+    width: 100%;
+    height: auto;
+}
+.container-detail-info{
+    display: flex;
+    width: 90%;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 0 15px;
+}

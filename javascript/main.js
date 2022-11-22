@@ -38,8 +38,23 @@ const addingEnterFuntion = () => {
 }
 
 const getMovieDetails = async(id) => {
-  console.log(id);
+  console.log(`Ver detalles de la peli ${id} en el idioma ${lang} que pertenece a la sección ${section}`);
+  const req = `https://api.themoviedb.org/3/movie/${id}?api_key=${global.apiKey}&language=${lang}`;
+  let res = await axios.get(req);
+  res = res.data;
+  renderDetails(res);
 }
+
+const renderDetails = (res) => {
+  pageTitle.style.display = "none";
+  document.getElementById("img-movie").src = `${global.imageUrl}${res.poster_path}`;
+  document.getElementById("container-detail-info-title").innerHTML = res.title;
+  document.getElementById("container-detail-info-description").innerHTML = res.overview;
+  document.getElementById("container-detail-info-rating").innerHTML = res.vote_average;
+
+  root.style.display = "none";
+  document.getElementsByClassName("container-detail")[0].style.display="flex";
+};
 
 const renderMovies = (movies) => {
   let moviesStr = "";

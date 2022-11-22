@@ -40,11 +40,13 @@ body {
   width: 162px;
   height: auto;
   margin-bottom: 10px;
+  cursor: pointer;
 }
 
 .movie-item img {
   width: 100%;
   height: auto;
+  border-radius: 15px;
 }
 
 .movie-item p {

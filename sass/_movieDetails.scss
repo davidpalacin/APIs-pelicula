@@ -7,7 +7,7 @@
 //         </div>
 // </main>
 .container-detail{
-    display: none;
+    display: flex;
     margin: 15px auto;
 }
 
@@ -21,4 +21,33 @@
     flex-direction: column;
     justify-content: space-around;
     padding: 0 15px;
+}
+#container-detail-info-rating{
+    padding: 10px 15px;
+    border-radius: 15px;
+    background-color: grey;
+    width: fit-content;
+}
+
+@media (max-width: 612px) {
+    .container-detail{
+        flex-direction: column;
+        
+    }
+    .container-detail-info{
+        padding: 0;
+        margin-top: 15px;
+        width: 100%;
+        align-items: center;
+    }
+    #container-detail-info-title{
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+    #container-detail-info-rating{
+        margin-top: 15px;
+    }
+    #container-detail-info-description{
+        text-align: center;
+    }
 }

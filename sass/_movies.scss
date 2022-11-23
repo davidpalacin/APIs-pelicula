@@ -13,12 +13,27 @@
     margin-bottom: 10px;
     cursor: pointer;
 }
+.movie-item img:hover{
+    transform: scale(1.06);
+}
 .movie-item img {
     width: 100%;
     height: auto;
     border-radius: 15px;
+    transition: all 0.5s ease;
 }
 
 .movie-item p {
     text-align: center;
+}
+.movie-item-rating{
+    margin: 10px 0;
+    border-radius: 100%;
+    background-color: white;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
 }

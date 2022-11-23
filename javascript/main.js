@@ -2,13 +2,12 @@ import { global } from "./global.js";
 // DECLARACIONES
 let lang = "en-EN";
 let section = "popular";
-const pageTitle = document.getElementById("page-title");
 const btnTopRatedMovies = document.getElementById("top-rated-movies");
 const btnPopularMovies = document.getElementById("popular-movies");
 const selector = document.getElementById("idioma");
-const root = document.getElementById("movies");
-pageTitle.innerHTML = "Películas más populares";
-
+const pageTitle = document.getElementById("page-title");
+const root = document.getElementsByClassName("container")[0];
+const uiMovieRating = document.getElementsByClassName("movie-item-rating");
 // CAMBIO DE IDIOMA
 selector.value = "en-EN";
 selector.addEventListener("change", function () {
@@ -33,31 +32,37 @@ getAllMovies(lang, section);
 const addingEnterFuntion = () => {
   const uiMovies = document.getElementsByClassName("movie-item");
   for (let i = 0; i < uiMovies.length; i++) {
-    uiMovies[i].addEventListener("click", () => {getMovieDetails(uiMovies[i].id)});
+    uiMovies[i].addEventListener("click", () => {
+      getMovieDetails(uiMovies[i].id);
+    });
   }
-}
+};
 
-const getMovieDetails = async(id) => {
-  console.log(`Ver detalles de la peli ${id} en el idioma ${lang} que pertenece a la sección ${section}`);
+const getMovieDetails = async (id) => {
   const req = `https://api.themoviedb.org/3/movie/${id}?api_key=${global.apiKey}&language=${lang}`;
   let res = await axios.get(req);
   res = res.data;
   renderDetails(res);
-}
+};
 
 const renderDetails = (res) => {
-  pageTitle.style.display = "none";
-  document.getElementById("img-movie").src = `${global.imageUrl}${res.poster_path}`;
-  document.getElementById("container-detail-info-title").innerHTML = res.title;
-  document.getElementById("container-detail-info-description").innerHTML = res.overview;
-  document.getElementById("container-detail-info-rating").innerHTML = res.vote_average;
-
-  root.style.display = "none";
-  document.getElementsByClassName("container-detail")[0].style.display="flex";
+  let htmlDetails = `
+  <div class="container-detail">
+    <div class="container-detail-image">
+      <img id="img-movie" src="${global.imageUrl}${res.poster_path}" alt="portada">
+    </div>
+    <div class="container-detail-info">
+      <h1 id="container-detail-info-title">${res.title}</h1>
+      <p id="container-detail-info-description"> ${res.overview}</p>
+      <p id="container-detail-info-rating">🏆  ${res.vote_average}</p>
+    </div>
+  </div>          
+  `;
+  root.innerHTML = htmlDetails;
 };
 
 const renderMovies = (movies) => {
-  let moviesStr = "";
+  let moviesStr = "<div id='movies'>";
 
   // Limpiar html
   root.innerHTML = "";
@@ -66,23 +71,64 @@ const renderMovies = (movies) => {
     moviesStr += `
     <div id='${movies[i].id}' class='movie-item'>
       <img src='${global.imageUrl}${movies[i].poster_path}'/>
+      <div class='movie-item-rating'>${movies[i].vote_average}</div>
       <p>${movies[i].title}</p>
-      <p>${movies[i].release_date}</p>
     </div>`;
   }
+  moviesStr += "</div>";
   root.innerHTML = moviesStr;
+  printRatingColors();
 };
+const printRatingColors = () => {
+  Array.from(uiMovieRating).forEach(rating => {
+    if(rating.innerHTML < 5) {
+      rating.style.color = "red";
+      rating.style.border = "2px solid red";
+    } else if (rating.innerHTML<7){
+      rating.style.color = "orange";
+      rating.style.border = "2px solid orange";
+    }else{
+      rating.style.color = "green";
+      rating.style.border = "2px solid green";
+    }
+  });
+}
 
 btnTopRatedMovies.addEventListener("click", () => {
   section = "top_rated";
   pageTitle.innerHTML = "Películas mejor votadas";
-  getAllMovies(lang, section);
+  getAllMovies(lang, section, btnTopRatedMovies.value);
 });
 btnPopularMovies.addEventListener("click", () => {
   section = "popular";
   pageTitle.innerHTML = "Películas más populares";
-  getAllMovies(lang, section);
+  getAllMovies(lang, section, btnPopularMovies.value);
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // FUNCION DE PELÍCULAS POPULARES
 // const getPopularMovies = async (lang) => {

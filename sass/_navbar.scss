@@ -1,6 +1,7 @@
 .navbar{
     display: flex;
     width: 100%;
+    justify-content: center;
     background-color: var(--main-color);
     height: 50px;
 }
@@ -15,11 +16,7 @@
     padding: 0 5px;
 }
 .navbar-item:hover{
-    background-color: rgb(41, 148, 255);
-}
-
-#box-idioma {
-    margin-left: auto;
+    background-color: rgb(221, 0, 0);
 }
 
 #box-idioma select,

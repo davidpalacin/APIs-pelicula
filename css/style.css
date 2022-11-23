@@ -145,4 +145,25 @@ body {
   #container-detail-info-description {
     text-align: center;
   }
+}
+.box-genres {
+  display: flex;
+  justify-content: space-between;
+  height: 400px;
+}
+
+.box-genres-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.box-genres-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
 }/*# sourceMappingURL=style.css.map */

@@ -65,9 +65,6 @@ const renderDetails = (res) => {
 const renderMovies = (movies) => {
   let moviesStr = "<div id='movies'>";
 
-  // Limpiar html
-  cleanRoot();
-
   for (let i = 0; i < movies.length; i++) {
     moviesStr += `
     <div id='${movies[i].id}' class='movie-item'>
@@ -80,6 +77,7 @@ const renderMovies = (movies) => {
   root.innerHTML = moviesStr;
   printRatingColors();
 };
+
 const printRatingColors = () => {
   Array.from(uiMovieRating).forEach(rating => {
     if(rating.innerHTML < 5) {
@@ -94,10 +92,10 @@ const printRatingColors = () => {
     }else{
       rating.style.color = "green";
       rating.style.border = "2px solid green";
-
     }
   });
 }
+
 const cleanRoot = () =>{
   root.innerHTML = "";
 }
@@ -106,11 +104,32 @@ const getCategories = async() =>{
   const req = ` https://api.themoviedb.org/3/genre/movie/list?api_key=${global.apiKey}&language=${lang}`;
   let res = await axios.get(req);
   res = await res.data;
-  return res;
+  printCategories(res);
 }
 
 const printCategories = (cats) =>{
-  console.log(typeof(cats));
+  console.log(cats.genres);
+  cats = cats.genres;
+  let htmlCats = `<div class="box-genres"><div class="box-genres-column">`;
+  let cont = 1;
+
+  for (let i = 0; i < cats.length; i++) {
+    if(cont <= 4){
+      htmlCats += `
+        <div class="box-genres-item">${cats[i].name}</div>
+      `;
+    }else{
+      htmlCats += `</div>`;
+      if(cats[i+1] != ""){
+        htmlCats += `<div class="box-genres-column">`;
+      }
+      cont=0;
+    }
+    cont++;
+  }
+  htmlCats += "</div>";
+  console.log(htmlCats);
+  root.innerHTML = htmlCats;
 }
 
 btnTopRatedMovies.addEventListener("click", () => {
@@ -126,7 +145,6 @@ btnPopularMovies.addEventListener("click", () => {
 btnCategories.addEventListener("click", () => {
   cleanRoot();
   let categories = getCategories();
-  printCategories(categories);
 });
 
 

@@ -4,6 +4,7 @@ let lang = "en-EN";
 let section = "popular";
 const btnTopRatedMovies = document.getElementById("top-rated-movies");
 const btnPopularMovies = document.getElementById("popular-movies");
+const btnCategories = document.getElementById("categories");
 const selector = document.getElementById("idioma");
 const pageTitle = document.getElementById("page-title");
 const root = document.getElementsByClassName("container")[0];
@@ -65,7 +66,7 @@ const renderMovies = (movies) => {
   let moviesStr = "<div id='movies'>";
 
   // Limpiar html
-  root.innerHTML = "";
+  cleanRoot();
 
   for (let i = 0; i < movies.length; i++) {
     moviesStr += `
@@ -87,11 +88,29 @@ const printRatingColors = () => {
     } else if (rating.innerHTML<7){
       rating.style.color = "orange";
       rating.style.border = "2px solid orange";
+    }else if(rating.innerHTML<8){
+      rating.style.color = "#b3b300";
+      rating.style.border = "2px solid #b3b300";
     }else{
       rating.style.color = "green";
       rating.style.border = "2px solid green";
+
     }
   });
+}
+const cleanRoot = () =>{
+  root.innerHTML = "";
+}
+
+const getCategories = async() =>{
+  const req = ` https://api.themoviedb.org/3/genre/movie/list?api_key=${global.apiKey}&language=${lang}`;
+  let res = await axios.get(req);
+  res = await res.data;
+  return res;
+}
+
+const printCategories = (cats) =>{
+  console.log(typeof(cats));
 }
 
 btnTopRatedMovies.addEventListener("click", () => {
@@ -104,7 +123,11 @@ btnPopularMovies.addEventListener("click", () => {
   pageTitle.innerHTML = "Películas más populares";
   getAllMovies(lang, section, btnPopularMovies.value);
 });
-
+btnCategories.addEventListener("click", () => {
+  cleanRoot();
+  let categories = getCategories();
+  printCategories(categories);
+});
 
 
 

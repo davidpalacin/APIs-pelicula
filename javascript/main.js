@@ -8,6 +8,7 @@ const btnCategories = document.getElementById("categories");
 const selector = document.getElementById("idioma");
 const pageTitle = document.getElementById("page-title");
 const root = document.getElementsByClassName("container")[0];
+const uiGenres = document.getElementsByClassName("box-genres-item");
 const uiMovieRating = document.getElementsByClassName("movie-item-rating");
 // CAMBIO DE IDIOMA
 selector.value = "en-EN";
@@ -101,12 +102,28 @@ const cleanRoot = () =>{
 }
 
 const getCategories = async() =>{
-  const req = ` https://api.themoviedb.org/3/genre/movie/list?api_key=${global.apiKey}&language=${lang}`;
+  const req = `https://api.themoviedb.org/3/genre/movie/list?api_key=${global.apiKey}&language=${lang}`;
   let res = await axios.get(req);
   res = await res.data;
   printCategories(res);
+  addEnterGenre();
 }
-
+const addEnterGenre = () => {
+  for (let i = 0; i < uiGenres.length; i++) {
+    uiGenres[i].addEventListener("click", () => {
+      let genre = uiGenres[i].id.split("genre").pop();
+      getMoviesByGenre(genre);
+    })
+  }
+}
+const getMoviesByGenre = async(genre) => {
+  const req = `${global.baseUrl}/discover/movie?api_key=${global.apiKey}&language=${lang}&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_genres=${genre}&with_watch_monetization_types=flatrate`;
+  let res = await axios.get(req);
+  res = await res.data;
+  res = res.results;
+  renderMovies(res);
+  addingEnterFuntion();
+}
 const printCategories = (cats) =>{
   console.log(cats.genres);
   cats = cats.genres;
@@ -116,7 +133,7 @@ const printCategories = (cats) =>{
   for (let i = 0; i < cats.length; i++) {
     if(cont <= 4){
       htmlCats += `
-        <div class="box-genres-item">${cats[i].name}</div>
+        <div id='genre${cats[i].id}' class="box-genres-item">${cats[i].name}</div>
       `;
     }else{
       htmlCats += `</div>`;
@@ -144,7 +161,7 @@ btnPopularMovies.addEventListener("click", () => {
 });
 btnCategories.addEventListener("click", () => {
   cleanRoot();
-  let categories = getCategories();
+  getCategories();
 });
 
 

@@ -149,6 +149,7 @@ body {
 }
 .box-genres {
   display: flex;
+  margin-top: 10px;
   justify-content: space-between;
   height: 400px;
 }
@@ -163,9 +164,14 @@ body {
 .box-genres-item {
   display: flex;
   justify-content: center;
+  border-radius: 10px;
   align-items: center;
   width: 100%;
   height: 100%;
   padding: 10px;
   cursor: pointer;
+}
+
+.box-genres-item:hover {
+  background-color: rgba(207, 207, 207, 0.05);
 }/*# sourceMappingURL=style.css.map */

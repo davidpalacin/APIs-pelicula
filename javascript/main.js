@@ -2,6 +2,7 @@ import { global } from "./global.js";
 // DECLARACIONES
 let lang = "en-EN";
 let section = "popular";
+let genre = "";
 const btnTopRatedMovies = document.getElementById("top-rated-movies");
 const btnPopularMovies = document.getElementById("popular-movies");
 const btnCategories = document.getElementById("categories");
@@ -14,7 +15,7 @@ const spinner = document.getElementById("spinner");
 // CAMBIO DE IDIOMA
 selector.value = "en-EN";
 selector.addEventListener("change", function () {
-  lang = document.getElementById("idioma").value;
+  lang = selector.value;
   getAllMovies(lang, section);
 });
 
@@ -28,19 +29,24 @@ const hideSpinner = () => {
 }
 
 const getAllMovies = async (lang, section) => {
-  try {
-    showSpinner();
-    root.innerHTML  = "";
-    setTimeout(async() => {
-      const api = `${global.baseUrl}/movie/${section}?api_key=${global.apiKey}&language=${lang}&page=1`;
-      let apiResult = await axios.get(api);
-      let movies = apiResult.data.results;
-      renderMovies(movies, section);
-      addingEnterFuntion();
-      hideSpinner();
-    }, 1000);
-  } catch (error) {
-    console.error(error);
+  if(section == "genres_list"){
+    getCategories();
+  }else{
+    try {
+      showSpinner();
+      root.innerHTML  = "";
+      setTimeout(async() => {
+        const api = `${global.baseUrl}/movie/${section}?api_key=${global.apiKey}&language=${lang}&page=1`;
+        let apiResult = await axios.get(api);
+        let movies = apiResult.data.results;
+        renderMovies(movies, section);
+        addingEnterFuntion();
+        hideSpinner();
+      }, 1000);
+    } catch (error) {
+      console.error(error);
+    }
+
   }
 };
 getAllMovies(lang, section);
@@ -122,7 +128,7 @@ const getCategories = async() =>{
 const addEnterGenre = () => {
   for (let i = 0; i < uiGenres.length; i++) {
     uiGenres[i].addEventListener("click", () => {
-      let genre = uiGenres[i].id.split("genre").pop();
+      genre = uiGenres[i].id.split("genre").pop();
       getMoviesByGenre(genre, uiGenres[i].innerHTML.split("📺").pop());
     })
   }
@@ -170,6 +176,7 @@ btnPopularMovies.addEventListener("click", () => {
   getAllMovies(lang, section, btnPopularMovies.value);
 });
 btnCategories.addEventListener("click", () => {
+  section = "genres_list";
   getCategories();
 });
 

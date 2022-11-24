@@ -6,10 +6,10 @@ const btnTopRatedMovies = document.getElementById("top-rated-movies");
 const btnPopularMovies = document.getElementById("popular-movies");
 const btnCategories = document.getElementById("categories");
 const selector = document.getElementById("idioma");
-const pageTitle = document.getElementById("page-title");
 const root = document.getElementsByClassName("container")[0];
 const uiGenres = document.getElementsByClassName("box-genres-item");
 const uiMovieRating = document.getElementsByClassName("movie-item-rating");
+
 // CAMBIO DE IDIOMA
 selector.value = "en-EN";
 selector.addEventListener("change", function () {
@@ -23,7 +23,7 @@ const getAllMovies = async (lang, section) => {
     const api = `${global.baseUrl}/movie/${section}?api_key=${global.apiKey}&language=${lang}&page=1`;
     let apiResult = await axios.get(api);
     let movies = apiResult.data.results;
-    renderMovies(movies);
+    renderMovies(movies, section);
     addingEnterFuntion();
   } catch (error) {
     console.error(error);
@@ -63,8 +63,8 @@ const renderDetails = (res) => {
   root.innerHTML = htmlDetails;
 };
 
-const renderMovies = (movies) => {
-  let moviesStr = "<div id='movies'>";
+const renderMovies = (movies, section) => {
+  let moviesStr = `<h1 id='page-title'>${section}</h1><div id='movies'>`;
 
   for (let i = 0; i < movies.length; i++) {
     moviesStr += `
@@ -105,27 +105,26 @@ const getCategories = async() =>{
   const req = `https://api.themoviedb.org/3/genre/movie/list?api_key=${global.apiKey}&language=${lang}`;
   let res = await axios.get(req);
   res = await res.data;
-  printCategories(res);
+  renderGenres(res);
   addEnterGenre();
 }
 const addEnterGenre = () => {
   for (let i = 0; i < uiGenres.length; i++) {
     uiGenres[i].addEventListener("click", () => {
       let genre = uiGenres[i].id.split("genre").pop();
-      getMoviesByGenre(genre);
+      getMoviesByGenre(genre, uiGenres[i].innerHTML.split("📺").pop());
     })
   }
 }
-const getMoviesByGenre = async(genre) => {
+const getMoviesByGenre = async(genre, genreName) => {
   const req = `${global.baseUrl}/discover/movie?api_key=${global.apiKey}&language=${lang}&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_genres=${genre}&with_watch_monetization_types=flatrate`;
   let res = await axios.get(req);
   res = await res.data;
   res = res.results;
-  renderMovies(res);
+  renderMovies(res, `Movies in ${genreName}`);
   addingEnterFuntion();
 }
-const printCategories = (cats) =>{
-  console.log(cats.genres);
+const renderGenres = (cats) =>{
   cats = cats.genres;
   let htmlCats = `<div class="box-genres"><div class="box-genres-column">`;
   let cont = 1;
@@ -133,7 +132,7 @@ const printCategories = (cats) =>{
   for (let i = 0; i < cats.length; i++) {
     if(cont <= 4){
       htmlCats += `
-        <div id='genre${cats[i].id}' class="box-genres-item">${cats[i].name}</div>
+        <div id='genre${cats[i].id}' class="box-genres-item">📺${cats[i].name}</div>
       `;
     }else{
       htmlCats += `</div>`;
@@ -151,16 +150,13 @@ const printCategories = (cats) =>{
 
 btnTopRatedMovies.addEventListener("click", () => {
   section = "top_rated";
-  pageTitle.innerHTML = "Películas mejor votadas";
   getAllMovies(lang, section, btnTopRatedMovies.value);
 });
 btnPopularMovies.addEventListener("click", () => {
   section = "popular";
-  pageTitle.innerHTML = "Películas más populares";
   getAllMovies(lang, section, btnPopularMovies.value);
 });
 btnCategories.addEventListener("click", () => {
-  cleanRoot();
   getCategories();
 });
 

@@ -74,7 +74,7 @@ body {
 .navbar {
   display: flex;
   width: 100%;
-  justify-content: center;
+  justify-content: space-evenly;
   background-color: var(--main-color);
   height: 50px;
 }
@@ -85,8 +85,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 10px;
   cursor: pointer;
+  width: 100%;
   padding: 0 5px;
 }
 
@@ -94,11 +94,32 @@ body {
   background-color: rgb(221, 0, 0);
 }
 
+#idioma {
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+}
+
 #box-idioma select,
 #box-idioma select option {
   color: black;
 }
 
+@media (max-width: 400px) {
+  .navbar {
+    flex-direction: column;
+    height: auto;
+  }
+  .navbar-item {
+    padding: 10px 0;
+    margin: 0;
+  }
+  #idioma {
+    padding: 5px;
+    width: 50%;
+    text-align: center;
+  }
+}
 .container-detail {
   display: flex;
   margin: 15px auto;

@@ -9,6 +9,7 @@ const selector = document.getElementById("idioma");
 const root = document.getElementsByClassName("container")[0];
 const uiGenres = document.getElementsByClassName("box-genres-item");
 const uiMovieRating = document.getElementsByClassName("movie-item-rating");
+const spinner = document.getElementById("spinner");
 
 // CAMBIO DE IDIOMA
 selector.value = "en-EN";
@@ -18,13 +19,26 @@ selector.addEventListener("change", function () {
 });
 
 // FUNCIONES
+const showSpinner = () => {
+  spinner.style.display = "block";
+}
+
+const hideSpinner = () => {
+  spinner.style.display = "none";
+}
+
 const getAllMovies = async (lang, section) => {
   try {
-    const api = `${global.baseUrl}/movie/${section}?api_key=${global.apiKey}&language=${lang}&page=1`;
-    let apiResult = await axios.get(api);
-    let movies = apiResult.data.results;
-    renderMovies(movies, section);
-    addingEnterFuntion();
+    showSpinner();
+    root.innerHTML  = "";
+    setTimeout(async() => {
+      const api = `${global.baseUrl}/movie/${section}?api_key=${global.apiKey}&language=${lang}&page=1`;
+      let apiResult = await axios.get(api);
+      let movies = apiResult.data.results;
+      renderMovies(movies, section);
+      addingEnterFuntion();
+      hideSpinner();
+    }, 1000);
   } catch (error) {
     console.error(error);
   }
@@ -97,10 +111,6 @@ const printRatingColors = () => {
   });
 }
 
-const cleanRoot = () =>{
-  root.innerHTML = "";
-}
-
 const getCategories = async() =>{
   const req = `https://api.themoviedb.org/3/genre/movie/list?api_key=${global.apiKey}&language=${lang}`;
   let res = await axios.get(req);
@@ -108,6 +118,7 @@ const getCategories = async() =>{
   renderGenres(res);
   addEnterGenre();
 }
+
 const addEnterGenre = () => {
   for (let i = 0; i < uiGenres.length; i++) {
     uiGenres[i].addEventListener("click", () => {
@@ -116,6 +127,7 @@ const addEnterGenre = () => {
     })
   }
 }
+
 const getMoviesByGenre = async(genre, genreName) => {
   const req = `${global.baseUrl}/discover/movie?api_key=${global.apiKey}&language=${lang}&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_genres=${genre}&with_watch_monetization_types=flatrate`;
   let res = await axios.get(req);
@@ -124,6 +136,7 @@ const getMoviesByGenre = async(genre, genreName) => {
   renderMovies(res, `Movies in ${genreName}`);
   addingEnterFuntion();
 }
+
 const renderGenres = (cats) =>{
   cats = cats.genres;
   let htmlCats = `<div class="box-genres"><div class="box-genres-column">`;

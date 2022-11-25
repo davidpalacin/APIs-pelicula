@@ -46,17 +46,6 @@ const getAllMovies = async (lang, section) => {
     } catch (error) {
       console.error(error);
     }
-
-  }
-};
-getAllMovies(lang, section);
-
-const addingEnterFuntion = () => {
-  const uiMovies = document.getElementsByClassName("movie-item");
-  for (let i = 0; i < uiMovies.length; i++) {
-    uiMovies[i].addEventListener("click", () => {
-      getMovieDetails(uiMovies[i].id);
-    });
   }
 };
 
@@ -67,8 +56,25 @@ const getMovieDetails = async (id) => {
   renderDetails(res);
 };
 
+const getCategories = async() =>{
+  const req = `https://api.themoviedb.org/3/genre/movie/list?api_key=${global.apiKey}&language=${lang}`;
+  let res = await axios.get(req);
+  res = await res.data;
+  renderGenres(res);
+  addEnterGenre();
+}
+
+const addingEnterFuntion = () => {
+  const uiMovies = document.getElementsByClassName("movie-item");
+  for (let i = 0; i < uiMovies.length; i++) {
+    uiMovies[i].addEventListener("click", () => {
+      getMovieDetails(uiMovies[i].id);
+    });
+  }
+};
+
 const renderDetails = (res) => {
-  let htmlDetails = `
+  root.innerHTML = `
   <div class="container-detail">
     <div class="container-detail-image">
       <img id="img-movie" src="${global.imageUrl}${res.poster_path}" alt="portada">
@@ -80,7 +86,6 @@ const renderDetails = (res) => {
     </div>
   </div>          
   `;
-  root.innerHTML = htmlDetails;
 };
 
 const renderMovies = (movies, section) => {
@@ -115,14 +120,6 @@ const printRatingColors = () => {
       rating.style.border = "2px solid green";
     }
   });
-}
-
-const getCategories = async() =>{
-  const req = `https://api.themoviedb.org/3/genre/movie/list?api_key=${global.apiKey}&language=${lang}`;
-  let res = await axios.get(req);
-  res = await res.data;
-  renderGenres(res);
-  addEnterGenre();
 }
 
 const addEnterGenre = () => {
@@ -179,6 +176,8 @@ btnCategories.addEventListener("click", () => {
   section = "genres_list";
   getCategories();
 });
+
+getAllMovies(lang, section);
 
 
 

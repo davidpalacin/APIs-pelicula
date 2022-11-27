@@ -3,6 +3,9 @@ import { global } from "./global.js";
 let lang = "en-EN";
 let section = "popular";
 let genre = "";
+let genreName = "";
+let myMoviesArray = [];
+
 const btnTopRatedMovies = document.getElementById("top-rated-movies");
 const btnPopularMovies = document.getElementById("popular-movies");
 const btnCategories = document.getElementById("categories");
@@ -12,11 +15,23 @@ const uiGenres = document.getElementsByClassName("box-genres-item");
 const uiMovieRating = document.getElementsByClassName("movie-item-rating");
 const spinner = document.getElementById("spinner");
 
+
 // CAMBIO DE IDIOMA
 selector.value = "en-EN";
 selector.addEventListener("change", function () {
   lang = selector.value;
-  getAllMovies(lang, section);
+  if(section == "popular"){
+    getPopularMovies()
+  } else if(section == "top_rated"){
+    getTopRatedMovies()
+  }else if(section == "genres_list"){
+    getGenresList();
+  }else if(section.includes("details_")){
+    idMovieDetail = section.split("details_").pop();
+    getMovieDetails(idMovieDetail);
+  }else if (section == "movies_by_genre"){
+    getMoviesByGenre(genre, genreName);
+  }
 });
 
 // FUNCIONES
@@ -28,35 +43,49 @@ const hideSpinner = () => {
   spinner.style.display = "none";
 }
 
-const getAllMovies = async (lang, section) => {
-  if(section == "genres_list"){
-    getCategories();
-  }else{
-    try {
-      showSpinner();
-      root.innerHTML  = "";
-      setTimeout(async() => {
-        const api = `${global.baseUrl}/movie/${section}?api_key=${global.apiKey}&language=${lang}&page=1`;
-        let apiResult = await axios.get(api);
-        let movies = apiResult.data.results;
-        renderMovies(movies, section);
-        addingEnterFuntion();
-        hideSpinner();
-      }, 1000);
-    } catch (error) {
-      console.error(error);
-    }
+const getPopularMovies = async () => {
+  try {
+    showSpinner();
+    root.innerHTML  = "";
+    setTimeout(async() => {
+      const api = `${global.baseUrl}/movie/popular?api_key=${global.apiKey}&language=${lang}&page=1`;
+      let apiResult = await axios.get(api);
+      let movies = apiResult.data.results;
+      renderMovies(movies, "Películas populares");
+      addingEnterFuntion();
+      hideSpinner();
+    }, 1000);
+  } catch (error) {
+    console.error(error);
   }
-};
+}
+
+const getTopRatedMovies = async () => {
+  try {
+    showSpinner();
+    root.innerHTML  = "";
+    setTimeout(async() => {
+      const api = `${global.baseUrl}/movie/top_rated?api_key=${global.apiKey}&language=${lang}&page=1`;
+      let apiResult = await axios.get(api);
+      let movies = apiResult.data.results;
+      renderMovies(movies, "Películas mejor votadas");
+      addingEnterFuntion();
+      hideSpinner();
+    }, 1000);
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 const getMovieDetails = async (id) => {
+  section = `details_${id}`;
   const req = `https://api.themoviedb.org/3/movie/${id}?api_key=${global.apiKey}&language=${lang}`;
   let res = await axios.get(req);
   res = res.data;
   renderDetails(res);
 };
 
-const getCategories = async() =>{
+const getGenresList = async() =>{
   const req = `https://api.themoviedb.org/3/genre/movie/list?api_key=${global.apiKey}&language=${lang}`;
   let res = await axios.get(req);
   res = await res.data;
@@ -126,23 +155,26 @@ const addEnterGenre = () => {
   for (let i = 0; i < uiGenres.length; i++) {
     uiGenres[i].addEventListener("click", () => {
       genre = uiGenres[i].id.split("genre").pop();
-      getMoviesByGenre(genre, uiGenres[i].innerHTML.split("📺").pop());
+      genreName = uiGenres[i].innerHTML.split("📺").pop();
+      getMoviesByGenre(genre, genreName);
     })
   }
 }
 
 const getMoviesByGenre = async(genre, genreName) => {
+  section = `movies_by_genre`;
   const req = `${global.baseUrl}/discover/movie?api_key=${global.apiKey}&language=${lang}&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_genres=${genre}&with_watch_monetization_types=flatrate`;
   let res = await axios.get(req);
   res = await res.data;
   res = res.results;
+  myMoviesArray = res;
   renderMovies(res, `Movies in ${genreName}`);
   addingEnterFuntion();
 }
 
 const renderGenres = (cats) =>{
   cats = cats.genres;
-  let htmlCats = `<div class="box-genres"><div class="box-genres-column">`;
+  let htmlCats = `<h1 id='page-title'>Categorías</h1><div class="box-genres"><div class="box-genres-column">`;
   let cont = 1;
 
   for (let i = 0; i < cats.length; i++) {
@@ -166,18 +198,20 @@ const renderGenres = (cats) =>{
 
 btnTopRatedMovies.addEventListener("click", () => {
   section = "top_rated";
-  getAllMovies(lang, section, btnTopRatedMovies.value);
-});
-btnPopularMovies.addEventListener("click", () => {
-  section = "popular";
-  getAllMovies(lang, section, btnPopularMovies.value);
-});
-btnCategories.addEventListener("click", () => {
-  section = "genres_list";
-  getCategories();
+  getTopRatedMovies();
 });
 
-getAllMovies(lang, section);
+btnPopularMovies.addEventListener("click", () => {
+  section= "popular";
+  getPopularMovies();
+});
+
+btnCategories.addEventListener("click", () => {
+  section = "genres_list";
+  getGenresList();
+});
+
+getPopularMovies();
 
 
 
@@ -216,6 +250,27 @@ getAllMovies(lang, section);
 //     renderMovies(movies);
 // })
 // .catch(err => console.log(err));
+
+// const getAllMovies = async (lang, section) => {
+//   if(section == "genres_list"){
+//     getGenresList();
+//   }else{
+//     try {
+//       showSpinner();
+//       root.innerHTML  = "";
+//       setTimeout(async() => {
+//         const api = `${global.baseUrl}/movie/${section}?api_key=${global.apiKey}&language=${lang}&page=1`;
+//         let apiResult = await axios.get(api);
+//         let movies = apiResult.data.results;
+//         renderMovies(movies, section);
+//         addingEnterFuntion();
+//         hideSpinner();
+//       }, 1000);
+//     } catch (error) {
+//       console.error(error);
+//     }
+//   }
+// };
 
 // con async await y fetch
 //   setTimeout(async()=>{

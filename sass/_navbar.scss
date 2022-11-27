@@ -7,12 +7,9 @@
 }
 #navbar-items{
     height: 100%;
-    width: 40%;
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
     align-items: center;
-    margin: 0 auto;
 }
 .navbar-item {
     color: white;
@@ -21,9 +18,8 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    width: 100%;
     height: 100%;
-    padding: 0 10px;
+    padding: 0 50px;
 }
 
 .navbar-item:hover {
@@ -50,13 +46,14 @@
     border-radius: 100%;
     font-size: 20px;
     cursor: pointer;
+    margin-left: auto;
 }
 
 #navbar-profileIcon:hover{
     background-color: rgb(221, 0, 0);
 }
 
-@media (max-width: 400px) {
+@media (max-width: 670px) {
     .navbar {
         flex-direction: column;
         height: auto;
@@ -66,16 +63,18 @@
         height: auto;
         width: 100%;
     }
-    
+    #navbar-profileIcon{
+        margin: 0;
+    }
 
     .navbar-item {
+        width: 100%;
         padding: 10px 0;
         margin: 0;
     }
 
     #idioma{
         padding: 5px;
-        width: 50%;
         text-align: center;
     }
 }

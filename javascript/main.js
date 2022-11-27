@@ -27,7 +27,7 @@ selector.addEventListener("change", function () {
   }else if(section == "genres_list"){
     getGenresList();
   }else if(section.includes("details_")){
-    idMovieDetail = section.split("details_").pop();
+    let idMovieDetail = section.split("details_").pop();
     getMovieDetails(idMovieDetail);
   }else if (section == "movies_by_genre"){
     getMoviesByGenre(genre, genreName);
@@ -125,7 +125,7 @@ const renderMovies = (movies, section) => {
     <div id='${movies[i].id}' class='movie-item'>
       <img src='${global.imageUrl}${movies[i].poster_path}'/>
       <div class='movie-item-rating'>${movies[i].vote_average}</div>
-      <p>${movies[i].title}</p>
+      <p class='movie_title'>${movies[i].title}</p>
     </div>`;
   }
   moviesStr += "</div>";

@@ -57,6 +57,7 @@ body {
 
 .movie-item p {
   text-align: center;
+  font-weight: bold;
 }
 
 .movie-item-rating {
@@ -74,10 +75,16 @@ body {
 .navbar {
   display: flex;
   width: 100%;
-  justify-content: space-evenly;
-  align-items: center;
   background-color: var(--main-color);
   height: 50px;
+  align-items: center;
+}
+
+#navbar-items {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .navbar-item {
@@ -87,9 +94,8 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  width: 100%;
   height: 100%;
-  padding: 0 5px;
+  padding: 0 50px;
 }
 
 .navbar-item:hover {
@@ -118,24 +124,45 @@ body {
   border-radius: 100%;
   font-size: 20px;
   cursor: pointer;
+  margin-left: auto;
 }
 
 #navbar-profileIcon:hover {
   background-color: rgb(221, 0, 0);
 }
 
-@media (max-width: 400px) {
+#user-profile-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 300px;
+  height: 300px;
+  position: absolute;
+  right: 0;
+  background-color: var(--main-color);
+}
+
+@media (max-width: 670px) {
   .navbar {
     flex-direction: column;
     height: auto;
   }
+  #navbar-items {
+    flex-direction: column;
+    height: auto;
+    width: 100%;
+  }
+  #navbar-profileIcon {
+    margin: 0;
+  }
   .navbar-item {
+    width: 100%;
     padding: 10px 0;
     margin: 0;
   }
   #idioma {
     padding: 5px;
-    width: 50%;
     text-align: center;
   }
 }
@@ -156,6 +183,10 @@ body {
   flex-direction: column;
   justify-content: space-around;
   padding: 0 15px;
+}
+
+#container-detail-info-description {
+  line-height: 30px;
 }
 
 #container-detail-info-rating {
@@ -190,9 +221,8 @@ body {
 }
 .box-genres {
   display: flex;
-  margin-top: 10px;
   justify-content: space-between;
-  height: 400px;
+  margin-top: 15px;
 }
 
 .box-genres-column {
@@ -204,11 +234,9 @@ body {
 
 .box-genres-item {
   display: flex;
-  justify-content: center;
-  border-radius: 10px;
-  align-items: center;
   width: 100%;
-  height: 100%;
+  border-radius: 10px;
+  margin-top: 50px;
   padding: 10px;
   cursor: pointer;
 }

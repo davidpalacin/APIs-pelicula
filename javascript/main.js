@@ -4,7 +4,7 @@ let lang = "en-EN";
 let section = "popular";
 let genre = "";
 let genreName = "";
-let myMoviesArray = [];
+let actualSession = "";
 
 const btnTopRatedMovies = document.getElementById("top-rated-movies");
 const btnPopularMovies = document.getElementById("popular-movies");
@@ -14,22 +14,26 @@ const root = document.getElementsByClassName("container")[0];
 const uiGenres = document.getElementsByClassName("box-genres-item");
 const uiMovieRating = document.getElementsByClassName("movie-item-rating");
 const spinner = document.getElementById("spinner");
-
+const spinnerUserBox = document.getElementById("spinner-user-box");
+const userProfile = document.getElementById("navbar-profileIcon");
+const userProfileMenu = document.getElementById("user-profile-box");
+const btnCreateSesion = document.getElementById("btn-create-sesion");
+const btnCrearLista = document.getElementById("btn-crear-lista");
 
 // CAMBIO DE IDIOMA
 selector.value = "en-EN";
 selector.addEventListener("change", function () {
   lang = selector.value;
-  if(section == "popular"){
+  if (section == "popular") {
     getPopularMovies()
-  } else if(section == "top_rated"){
+  } else if (section == "top_rated") {
     getTopRatedMovies()
-  }else if(section == "genres_list"){
+  } else if (section == "genres_list") {
     getGenresList();
-  }else if(section.includes("details_")){
+  } else if (section.includes("details_")) {
     let idMovieDetail = section.split("details_").pop();
     getMovieDetails(idMovieDetail);
-  }else if (section == "movies_by_genre"){
+  } else if (section == "movies_by_genre") {
     getMoviesByGenre(genre, genreName);
   }
 });
@@ -43,11 +47,19 @@ const hideSpinner = () => {
   spinner.style.display = "none";
 }
 
+const showSpinnerUserBox = () => {
+  spinnerUserBox.style.display = "block";
+}
+
+const hideSpinnerUserBox = () => {
+  spinnerUserBox.style.display = "none";
+}
+
 const getPopularMovies = async () => {
   try {
     showSpinner();
-    root.innerHTML  = "";
-    setTimeout(async() => {
+    root.innerHTML = "";
+    setTimeout(async () => {
       const api = `${global.baseUrl}/movie/popular?api_key=${global.apiKey}&language=${lang}&page=1`;
       let apiResult = await axios.get(api);
       let movies = apiResult.data.results;
@@ -63,8 +75,8 @@ const getPopularMovies = async () => {
 const getTopRatedMovies = async () => {
   try {
     showSpinner();
-    root.innerHTML  = "";
-    setTimeout(async() => {
+    root.innerHTML = "";
+    setTimeout(async () => {
       const api = `${global.baseUrl}/movie/top_rated?api_key=${global.apiKey}&language=${lang}&page=1`;
       let apiResult = await axios.get(api);
       let movies = apiResult.data.results;
@@ -85,7 +97,7 @@ const getMovieDetails = async (id) => {
   renderDetails(res);
 };
 
-const getGenresList = async() =>{
+const getGenresList = async () => {
   const req = `https://api.themoviedb.org/3/genre/movie/list?api_key=${global.apiKey}&language=${lang}`;
   let res = await axios.get(req);
   res = await res.data;
@@ -135,16 +147,16 @@ const renderMovies = (movies, section) => {
 
 const printRatingColors = () => {
   Array.from(uiMovieRating).forEach(rating => {
-    if(rating.innerHTML < 5) {
+    if (rating.innerHTML < 5) {
       rating.style.color = "red";
       rating.style.border = "2px solid red";
-    } else if (rating.innerHTML<7){
+    } else if (rating.innerHTML < 7) {
       rating.style.color = "orange";
       rating.style.border = "2px solid orange";
-    }else if(rating.innerHTML<8){
+    } else if (rating.innerHTML < 8) {
       rating.style.color = "#b3b300";
       rating.style.border = "2px solid #b3b300";
-    }else{
+    } else {
       rating.style.color = "green";
       rating.style.border = "2px solid green";
     }
@@ -161,57 +173,104 @@ const addEnterGenre = () => {
   }
 }
 
-const getMoviesByGenre = async(genre, genreName) => {
+const getMoviesByGenre = async (genre, genreName) => {
   section = `movies_by_genre`;
   const req = `${global.baseUrl}/discover/movie?api_key=${global.apiKey}&language=${lang}&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_genres=${genre}&with_watch_monetization_types=flatrate`;
   let res = await axios.get(req);
   res = await res.data;
   res = res.results;
-  myMoviesArray = res;
   renderMovies(res, `Movies in ${genreName}`);
   addingEnterFuntion();
 }
 
-const renderGenres = (cats) =>{
-  cats = cats.genres;
-  let htmlCats = `<h1 id='page-title'>Categorías</h1><div class="box-genres"><div class="box-genres-column">`;
-  let cont = 1;
-
-  for (let i = 0; i < cats.length; i++) {
-    if(cont <= 4){
-      htmlCats += `
-        <div id='genre${cats[i].id}' class="box-genres-item">📺${cats[i].name}</div>
-      `;
-    }else{
-      htmlCats += `</div>`;
-      if(cats[i+1] != ""){
-        htmlCats += `<div class="box-genres-column">`;
-      }
-      cont=0;
-    }
-    cont++;
+const generateSession = async () => {
+  try {
+    showSpinnerUserBox();
+    const req = await axios.get("https://api.themoviedb.org/3/authentication/guest_session/new?api_key=ca50f336846786df17f43f4b8ea96662");
+    actualSession = req.data;
+    console.log(`la sesion actual es ${actualSession.guest_session_id}`);
+    hideSpinnerUserBox();
+  } catch (error) {
+    console.error(error);
   }
-  htmlCats += "</div>";
-  console.log(htmlCats);
-  root.innerHTML = htmlCats;
 }
 
-btnTopRatedMovies.addEventListener("click", () => {
-  section = "top_rated";
-  getTopRatedMovies();
-});
+const getCreateList = () => {
+  if (actualSession == "") {
+    alert("necesitas iniciar sesión para crear una lista, también puedes iniciar sesión como invitado.");
+  } else {
+    const req = `${global.baseUrl}/list?api_key=${global.apiKey}`;
+    axios.post(req, {
+      "name": 'John',
+      "description": 'This is an awesome list',
+      "language": "en"
+    })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+}
 
-btnPopularMovies.addEventListener("click", () => {
-  section= "popular";
+
+  const renderGenres = (cats) => {
+    cats = cats.genres;
+    let htmlCats = `<h1 id='page-title'>Categorías</h1><div class="box-genres"><div class="box-genres-column">`;
+    let cont = 1;
+
+    for (let i = 0; i < cats.length; i++) {
+      if (cont <= 4) {
+        htmlCats += `
+        <div id='genre${cats[i].id}' class="box-genres-item">📺${cats[i].name}</div>
+      `;
+      } else {
+        htmlCats += `</div>`;
+        if (cats[i + 1] != "") {
+          htmlCats += `<div class="box-genres-column">`;
+        }
+        cont = 0;
+      }
+      cont++;
+    }
+    htmlCats += "</div>";
+    console.log(htmlCats);
+    root.innerHTML = htmlCats;
+  }
+
+  btnTopRatedMovies.addEventListener("click", () => {
+    section = "top_rated";
+    getTopRatedMovies();
+  });
+
+  btnPopularMovies.addEventListener("click", () => {
+    section = "popular";
+    getPopularMovies();
+  });
+
+  btnCategories.addEventListener("click", () => {
+    section = "genres_list";
+    getGenresList();
+  });
+
+  btnCreateSesion.addEventListener("click", () => {
+    generateSession();
+  });
+
+  btnCrearLista.addEventListener("click", () => {
+    getCreateList();
+  })
+
+  userProfile.addEventListener("click", () => {
+    if (userProfileMenu.style.display === "none") {
+      userProfileMenu.style.display = "flex";
+    } else {
+      userProfileMenu.style.display = "none";
+    }
+  });
+
   getPopularMovies();
-});
-
-btnCategories.addEventListener("click", () => {
-  section = "genres_list";
-  getGenresList();
-});
-
-getPopularMovies();
 
 
 

@@ -54,23 +54,39 @@
 }
 
 #user-profile-box{
-    display: flex;
+    display: none;
+    position: absolute;
+    right: 108px;
+    top: 60px;
     flex-direction: column;
-    align-items: center;
-    margin-top: 10px;
-    margin-left: auto;
-    margin-right: 110px;
-    width: fit-content;
     border-radius: 10px;
     background-color: var(--main-color);
+    transition: display 0.5s ease-in-out;
+    animation-duration: 1s;
+    animation-name: slidein;
 }
 
+@keyframes slidein {
+    from {
+        right: 0;
+        opacity: 0.5;
+    }
+  
+    to {
+      right: 108px;
+      opacity: 1;
+    }
+  }
+
 .user-profile-box-item{
+    display: flex;
     width: 100%;
+    align-items: center;
     text-align: center;
     padding: 10px 50px;
     border-radius: 10px;
     cursor: pointer;
+    font-weight: 550;
 }
 
 .user-profile-box-item:hover{

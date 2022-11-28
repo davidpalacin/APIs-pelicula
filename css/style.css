@@ -132,25 +132,50 @@ body {
 }
 
 #user-profile-box {
-  display: flex;
+  display: none;
+  position: absolute;
+  right: 108px;
+  top: 60px;
   flex-direction: column;
-  align-items: center;
-  margin-top: 10px;
-  margin-left: auto;
-  margin-right: 110px;
-  width: -webkit-fit-content;
-  width: -moz-fit-content;
-  width: fit-content;
   border-radius: 10px;
   background-color: var(--main-color);
+  transition: display 0.5s ease-in-out;
+  -webkit-animation-duration: 1s;
+          animation-duration: 1s;
+  -webkit-animation-name: slidein;
+          animation-name: slidein;
 }
 
+@-webkit-keyframes slidein {
+  from {
+    right: 0;
+    opacity: 0.5;
+  }
+  to {
+    right: 108px;
+    opacity: 1;
+  }
+}
+
+@keyframes slidein {
+  from {
+    right: 0;
+    opacity: 0.5;
+  }
+  to {
+    right: 108px;
+    opacity: 1;
+  }
+}
 .user-profile-box-item {
+  display: flex;
   width: 100%;
+  align-items: center;
   text-align: center;
   padding: 10px 50px;
   border-radius: 10px;
   cursor: pointer;
+  font-weight: 550;
 }
 
 .user-profile-box-item:hover {
@@ -268,6 +293,18 @@ body {
   border: 4px solid rgba(0, 0, 0, 0.1);
   width: 36px;
   height: 36px;
+  border-radius: 50%;
+  border-left-color: #09f;
+  -webkit-animation: spin 1s ease infinite;
+          animation: spin 1s ease infinite;
+}
+
+#spinner-user-box {
+  margin-left: 10px;
+  display: none;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   border-left-color: #09f;
   -webkit-animation: spin 1s ease infinite;

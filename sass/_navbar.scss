@@ -56,6 +56,7 @@
 #user-profile-box{
     display: none;
     position: absolute;
+    z-index: 1;
     right: 108px;
     top: 60px;
     flex-direction: column;
@@ -81,8 +82,8 @@
 .user-profile-box-item{
     display: flex;
     width: 100%;
+    justify-content: center;
     align-items: center;
-    text-align: center;
     padding: 10px 50px;
     border-radius: 10px;
     cursor: pointer;

@@ -5,7 +5,10 @@ let section = "popular";
 let genre = "";
 let genreName = "";
 let guestSession = "";
-
+let session = {
+  request_token: "",
+  session_id: "",
+};
 const btnTopRatedMovies = document.getElementById("top-rated-movies");
 const btnPopularMovies = document.getElementById("popular-movies");
 const btnCategories = document.getElementById("categories");
@@ -17,8 +20,13 @@ const spinner = document.getElementById("spinner");
 const spinnerUserBox = document.getElementById("spinner-user-box");
 const userProfile = document.getElementById("navbar-profileIcon");
 const userProfileMenu = document.getElementById("user-profile-box");
-const btnCreateSesion = document.getElementById("btn-create-sesion");
+const btnCreateGuestSession = document.getElementById(
+  "btn-create-guest-sesion"
+);
 const btnCrearLista = document.getElementById("btn-crear-lista");
+const btnGrantPermissions = document.getElementById("btn-grant-permissions");
+const btnLogin = document.getElementById("btn-login");
+const btnLogout = document.getElementById("btn-logout");
 
 // CAMBIO DE IDIOMA
 selector.value = "en-EN";
@@ -194,33 +202,67 @@ const generateGuestSession = async () => {
       "https://api.themoviedb.org/3/authentication/guest_session/new?api_key=ca50f336846786df17f43f4b8ea96662"
     );
     guestSession = req.data;
-    console.log(`la sesion actual es ${guestSession.guest_session_id}`);
     hideSpinnerUserBox();
   } catch (error) {
     console.error(error);
   }
 };
 
-const getCreateList = () => {
-  if (guestSession == "") {
-    alert(
-      "necesitas iniciar sesión para crear una lista, también puedes iniciar sesión como invitado."
-    );
-  } else {
-    const req = `${global.baseUrl}/list?api_key=${global.apiKey}&session_id=${guestSession.guest_session_id}`;
-    axios
-      .post(req, {
-        name: "John",
-        description: "This is an awesome list",
-        language: "en",
-      })
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }
+// axios
+//   .post(req, {
+//     name: "John",
+//     description: "This is an awesome list",
+//     language: "en",
+//   })
+//   .then(function (response) {
+//     console.log(response);
+//   })
+//   .catch(function (error) {
+//     console.log(error);
+//   });
+
+const getRequestToken = async () => {
+  const req = `${global.baseUrl}/authentication/token/new?api_key=${global.apiKey}`;
+  const res = await axios.get(req);
+  session.request_token = res.data.request_token;
+  console.log("request token en la funcion:");
+  console.log(session);
+};
+
+const createSessionId = () => {
+  const req = `https://api.themoviedb.org/3/authentication/session/new?api_key=ca50f336846786df17f43f4b8ea96662`;
+  axios
+    .post(req, {
+      request_token: session.request_token,
+    })
+    .then((response) => {
+      alert("TMDB tiene los permisos necesarios y has iniciado sesión.");
+      session.session_id = response.data.session_id;
+      console.log("Ahora la sesión es:");
+      console.log(session);
+    })
+    .catch((error) => {
+      alert("Primero debes otorgar permisos a TMDB");
+      console.log(error);
+    });
+};
+
+const closeSession = () => {
+  const req = `https://api.themoviedb.org/3/authentication/session?api_key=ca50f336846786df17f43f4b8ea96662`;
+  axios
+    .delete(req, {
+      data: {
+        session_id: session.session_id,
+      },
+    })
+    .then((response) => {
+      console.log("Se ha podido cerrar la sesión");
+      console.log(response);
+    })
+    .catch((error) => {
+      console.log("no se cierra sesion");
+      console.log(error);
+    });
 };
 
 const checkDescription = (data) => {
@@ -270,12 +312,29 @@ btnCategories.addEventListener("click", () => {
   getGenresList();
 });
 
-btnCreateSesion.addEventListener("click", () => {
+btnCreateGuestSession.addEventListener("click", () => {
   generateGuestSession();
 });
 
 btnCrearLista.addEventListener("click", () => {
   getCreateList();
+});
+
+btnGrantPermissions.addEventListener("click", async () => {
+  await getRequestToken();
+  console.log("en el addeventlistener es " + session.request_token);
+  window.open(
+    `https://www.themoviedb.org/authenticate/${session.request_token}`,
+    "_blank"
+  );
+});
+
+btnLogin.addEventListener("click", () => {
+  createSessionId();
+});
+
+btnLogout.addEventListener("click", () => {
+  closeSession();
 });
 
 userProfile.addEventListener("click", () => {

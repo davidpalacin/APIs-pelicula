@@ -208,19 +208,6 @@ const generateGuestSession = async () => {
   }
 };
 
-// axios
-//   .post(req, {
-//     name: "John",
-//     description: "This is an awesome list",
-//     language: "en",
-//   })
-//   .then(function (response) {
-//     console.log(response);
-//   })
-//   .catch(function (error) {
-//     console.log(error);
-//   });
-
 const getRequestToken = async () => {
   const req = `${global.baseUrl}/authentication/token/new?api_key=${global.apiKey}`;
   const res = await axios.get(req);
@@ -246,6 +233,22 @@ const createSessionId = () => {
       console.log(error);
     });
 };
+
+// Crear una lista cuando el usuario ya tiene sesión iniciada.
+const createList = () =>{
+  const req = `${global.baseUrl}/list?api_key=${global.apiKey}&session_id=${session.session_id}`;
+  axios.post(req, {
+    name: "This is my awesome test list.",
+    description: "Just an awesome list dawg.",
+    language: "en"
+  })
+  .then((response)=>{
+    console.log(response);
+  })
+  .catch((error)=>{
+    console.log(error);
+  })
+}
 
 const closeSession = () => {
   const req = `https://api.themoviedb.org/3/authentication/session?api_key=ca50f336846786df17f43f4b8ea96662`;
@@ -317,7 +320,7 @@ btnCreateGuestSession.addEventListener("click", () => {
 });
 
 btnCrearLista.addEventListener("click", () => {
-  getCreateList();
+  createList();
 });
 
 btnGrantPermissions.addEventListener("click", async () => {
@@ -338,11 +341,9 @@ btnLogout.addEventListener("click", () => {
 });
 
 userProfile.addEventListener("click", () => {
-  if (userProfileMenu.style.display === "none") {
-    userProfileMenu.style.display = "flex";
-  } else {
-    userProfileMenu.style.display = "none";
-  }
+  userProfileMenu.style.display === "none"
+    ? (userProfileMenu.style.display = "flex")
+    : (userProfileMenu.style.display = "none");  
 });
 
 getPopularMovies();

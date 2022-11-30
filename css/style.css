@@ -95,7 +95,7 @@ body {
   justify-content: center;
   cursor: pointer;
   height: 100%;
-  padding: 0 50px;
+  padding: 0 20px;
 }
 
 .navbar-item:hover {
@@ -135,36 +135,36 @@ body {
   display: none;
   position: absolute;
   z-index: 1;
-  right: 108px;
+  right: 10px;
   top: 60px;
   flex-direction: column;
   border-radius: 10px;
   background-color: var(--main-color);
   transition: display 0.5s ease-in-out;
-  -webkit-animation-duration: 1s;
-          animation-duration: 1s;
+  -webkit-animation-duration: 0.5s;
+          animation-duration: 0.5s;
   -webkit-animation-name: slidein;
           animation-name: slidein;
 }
 
 @-webkit-keyframes slidein {
   from {
-    right: 0;
+    top: 0;
     opacity: 0.5;
   }
   to {
-    right: 108px;
+    top: 60px;
     opacity: 1;
   }
 }
 
 @keyframes slidein {
   from {
-    right: 0;
+    top: 0;
     opacity: 0.5;
   }
   to {
-    right: 108px;
+    top: 60px;
     opacity: 1;
   }
 }

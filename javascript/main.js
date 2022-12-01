@@ -23,6 +23,7 @@ const userProfileMenu = document.getElementById("user-profile-box");
 const btnCreateGuestSession = document.getElementById(
   "btn-create-guest-sesion"
 );
+const btnMisListas = document.getElementById("btn-mis-listas");
 const btnCrearLista = document.getElementById("btn-crear-lista");
 const btnGrantPermissions = document.getElementById("btn-grant-permissions");
 const btnLogin = document.getElementById("btn-login");
@@ -216,16 +217,15 @@ const getRequestToken = async () => {
   console.log(session);
 };
 
-const createSessionId = () => {
+const createSessionId = async () => {
   const req = `https://api.themoviedb.org/3/authentication/session/new?api_key=ca50f336846786df17f43f4b8ea96662`;
-  axios
+  await axios
     .post(req, {
       request_token: session.request_token,
     })
     .then((response) => {
       alert("TMDB tiene los permisos necesarios y has iniciado sesión.");
       session.session_id = response.data.session_id;
-      console.log("Ahora la sesión es:");
       console.log(session);
     })
     .catch((error) => {
@@ -276,6 +276,13 @@ const checkDescription = (data) => {
   }
 };
 
+const getUsername = async() => {
+  console.log(`Me ha llegado el ${session.session_id}`);
+  const req = ` https://${global.baseUrl}/account?api_key=${global.apiKey}&session_id=${session.session_id}`;
+  const result = await axios.get(req);
+  console.log(result);
+}
+
 const renderGenres = (cats) => {
   cats = cats.genres;
   let htmlCats = `<h1 id='page-title'>Categorías</h1><div class="box-genres"><div class="box-genres-column">`;
@@ -323,6 +330,10 @@ btnCrearLista.addEventListener("click", () => {
   createList();
 });
 
+btnMisListas.addEventListener("click", ()=>{
+  getUsername();
+});
+
 btnGrantPermissions.addEventListener("click", async () => {
   await getRequestToken();
   console.log("en el addeventlistener es " + session.request_token);
@@ -332,7 +343,7 @@ btnGrantPermissions.addEventListener("click", async () => {
   );
 });
 
-btnLogin.addEventListener("click", () => {
+btnLogin.addEventListener("click", async() => {
   createSessionId();
 });
 

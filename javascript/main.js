@@ -2,9 +2,9 @@ import { global } from "./global.js";
 // DECLARACIONES
 let lang = "en-EN";
 let section = "popular";
-let genre = "";
-let genreName = "";
-let guestSession = "";
+let genre;
+let genreName;
+let guestSession;
 let session = {
   request_token: "",
   session_id: "",
@@ -277,8 +277,8 @@ const checkDescription = (data) => {
 };
 
 const getUsername = async() => {
-  console.log(`Me ha llegado el ${session.session_id}`);
-  const req = ` https://${global.baseUrl}/account?api_key=${global.apiKey}&session_id=${session.session_id}`;
+  console.log(`Me ha llegado la sesión ---> ${session.session_id}`);
+  const req = `https://${global.baseUrl}/account?api_key=${global.apiKey}&session_id=${session.session_id}`;
   const result = await axios.get(req);
   console.log(result);
 }
